@@ -2455,14 +2455,14 @@ int main()
        
         //TOP CHECKER
 
-        if (Wall_Arr[B_i][B_j].getPosition().x > -5000)// && Wall_Arr[B_i][B_j].getPosition().x > -5000)
+        if (Wall_Arr[B_i][B_j - 1].getPosition().x > -5000)// && Wall_Arr[B_i][B_j].getPosition().x > -5000)
         {
 
-            if (ball.getPosition().y < Move_Arr[B_i][B_j + 1].getPosition().y && ballSpeed.y < 0)
+            if (ball.getPosition().y < Move_Arr[B_i][B_j].getPosition().y && ballSpeed.y < 0)
             {
                 T_col = true;
                 std::cout << "top collision: " << B_i << " ; " << B_j;
-                ball.setPosition(ball.getPosition().x, Move_Arr[B_i][B_j + 1].getPosition().y);
+                ball.setPosition(ball.getPosition().x, Move_Arr[B_i][B_j].getPosition().y);
                 ballSpeed.y = -ballSpeed.y * 0;
                 /* B_i = ((ball.getPosition().x + x) / rect_W);
                  B_j = ball.getPosition().y / rect_H;*/
@@ -2548,7 +2548,7 @@ int main()
                     {
                         T_col = true;
                         std::cout << "top collision right : " << B_i << " ; " << B_j << " ; ";
-                        ball.setPosition(ball.getPosition().x, Move_Arr[B_i][B_j + 1].getPosition().y);
+                        ball.setPosition(ball.getPosition().x, Move_Arr[B_i][B_j].getPosition().y);
                         ballSpeed.y = -ballSpeed.y * 0;
                        /* B_i = ((ball.getPosition().x + x) / rect_W);
                         B_j = ball.getPosition().y / rect_H;*/
@@ -2616,18 +2616,22 @@ int main()
                     top = top - 1;
                 
                 //Rotation
-                if (ballSpeed.x != 0 && ground == true)
-                {
-                    
-                    //ball.setOrigin(rect_W / 2, rect_H / 2);
-                   // std::cout << std::endl << "ball origin 1 : " << ball.getOrigin().x << " ; " << ball.getOrigin().y << std::endl;
-                    ball.setRotation(ball.getRotation() - ballSpeed.x/2);
-                    //ball.setOrigin(0, 0);
-                    //std::cout << std::endl << "ball origin 2 : " << ball.getOrigin().x << " ; " << ball.getOrigin().y << std::endl;
-                    //ball.setPosition(180, ball.getPosition().y);
-                    //std::cout << std::endl << "ball origin" << ball.getOrigin().x << " ; " << ball.getOrigin().y << std::endl;
-                }
 
+                if (ballSpeed.x != 0)
+                {
+                    ball.setRotation(ball.getRotation() - ballSpeed.x / 4);
+                    if (ground == true)
+                    {
+
+                        //ball.setOrigin(rect_W / 2, rect_H / 2);
+                       // std::cout << std::endl << "ball origin 1 : " << ball.getOrigin().x << " ; " << ball.getOrigin().y << std::endl;
+                        ball.setRotation(ball.getRotation() - ballSpeed.x / 2);
+                        //ball.setOrigin(0, 0);
+                        //std::cout << std::endl << "ball origin 2 : " << ball.getOrigin().x << " ; " << ball.getOrigin().y << std::endl;
+                        //ball.setPosition(180, ball.getPosition().y);
+                        //std::cout << std::endl << "ball origin" << ball.getOrigin().x << " ; " << ball.getOrigin().y << std::endl;
+                    }
+                }
                 /*L_col= false;
             R_col = false;*/
             
@@ -2711,7 +2715,7 @@ int main()
                     gr = 0;*/
                 
 
-            std::cout << "Ball Position X = " << ball.getPosition().x << " ; Ball Position Y = " << ball.getPosition().y << " ; BallSpeed X= " << ballSpeed.x << " ; BallSpeed Y= " << ballSpeed.y << " ; " << "B_i = " << B_i << " ; B_j= " << B_j << " ; " << std::endl;
+            std::cout << "Iteration = " << it <<" ; Ball Position X = " << ball.getPosition().x << " ; Ball Position Y = " << ball.getPosition().y << " ; BallSpeed X= " << ballSpeed.x << " ; BallSpeed Y= " << ballSpeed.y << " ; " << "B_i = " << B_i << " ; B_j= " << B_j << " ; " << std::endl;
             
             
            // std::cout << std::endl << "B_i = " << B_i << " ; B_j= " << B_j << " ; " << std::endl;
