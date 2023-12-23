@@ -2,6 +2,11 @@
 #include <iostream>
 #include<cstdlib>
 //#include <fstream>
+#include<cmath>
+
+
+
+#define PI 3.1415926535898
 const int w = 113;
 const int h = 8;
 sf::RectangleShape Move_Arr[w][h];
@@ -81,6 +86,44 @@ int main()
     enemy9.setFillColor(sf::Color(0, 0, 0));
     enemy9.setOrigin(enemy9.getSize().x / 2, enemy9.getSize().y / 2);
     
+
+    
+    /*float radius_x = 45;
+    float radius_y = 70;
+    unsigned short quality = 70;
+    sf::ConvexShape ellipse;
+    ellipse.setPointCount(quality);
+
+
+
+    for (unsigned short i = 0; i < quality; ++i) {
+        float rad = (360 / quality * i) / (360 / PI / 2);
+        float x = cos(rad) * radius_x;
+        float y = sin(rad) * radius_y;
+
+        ellipse.setPoint(i, sf::Vector2f(x, y));
+    };
+
+    ellipse.setPosition(270, 540);
+
+    float radius_x2 = 40;
+    float radius_y2 = 55;
+    unsigned short quality2 = 70;
+    sf::ConvexShape ellipse2;
+    ellipse2.setPointCount(quality2);
+
+
+
+    for (unsigned short i = 0; i < quality2; ++i) {
+        float rad = (360 / quality2 * i) / (360 / PI / 2);
+        float x = cos(rad) * radius_x2;
+        float y = sin(rad) * radius_y2;
+
+        ellipse2.setPoint(i, sf::Vector2f(x, y));
+    };
+
+    ellipse2.setPosition(272, 542);
+    ellipse2.setFillColor(sf::Color(0, 0, 0));*/
 
     sf::RectangleShape back4(sf::Vector2f(1080, 720));
     sf::Texture texture4;
@@ -2082,7 +2125,7 @@ int main()
             
             
 
-            int r = rand() % 10;
+            /*int r = rand() % 10;
             if (r < 2)
             {
                 Wall_Arr[i][j].setTexture(&brick4);
@@ -2111,10 +2154,14 @@ int main()
             {
                 Wall_Arr[i][j].setTexture(&brick5);
                 Wall_Arr[i][j].setFillColor(sf::Color(150, 150, 130));
-            }
+            }*/
             
             // Wall_Arr[i][j].setTexture(&grass1);
             //Wall_Arr[i][j].setOutlineThickness(1);
+            
+            Wall_Arr[i][j].setTexture(&brick3);
+            if (j != 7 && j != 0)
+                Wall_Arr[i][j].setRotation(90);
             Wall_Arr[i][j].setOutlineColor(sf::Color(0, 0, 0));
 
             Wall_Arr[i][j].setOrigin(rect_W / 2, rect_H / 2);
@@ -2748,7 +2795,8 @@ int main()
             Window.draw(enemy9);
 
 
-
+           /* Window.draw(ellipse);
+            Window.draw(ellipse2);*/
 
             Window.display();
 
