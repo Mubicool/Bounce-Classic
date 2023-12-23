@@ -191,7 +191,7 @@ int main()
                 break;
             Wall_Arr[i][j].setPosition(x1, Wall_Arr[i][j].getPosition().y);
             WallReadArray >> x1;
-            std::cout << " :  Y : " << x1 << std::endl;
+            //std::cout << " :  Y : " << x1 << std::endl;
             if (WallReadArray.eof())
                 break;
             Wall_Arr[i][j].setPosition(Wall_Arr[i][j].getPosition().x, x1);
@@ -219,12 +219,12 @@ int main()
 
 
             MoveReadArray >> x1;
-            std::cout << " Move["<< i << " ][" << j << "] =  X : " << x1;
+           // std::cout << " Move["<< i << " ][" << j << "] =  X : " << x1;
             if (MoveReadArray.eof())
                 break;
             Move_Arr[i][j].setPosition(x1, Move_Arr[i][j].getPosition().y);
             MoveReadArray >> x1;
-            std::cout << " :  Y : " << x1 << std::endl;
+           // std::cout << " :  Y : " << x1 << std::endl;
             if (MoveReadArray.eof())
                 break;
             Move_Arr[i][j].setPosition(Move_Arr[i][j].getPosition().x, x1);
@@ -357,7 +357,7 @@ int main()
 
         B_i = (102 - ((Wall_Arr[102][0].getPosition().x - ball.getPosition().x)) / rect_W);
         B_j = ball.getPosition().y / rect_H;
-        std::cout << "  Test Location : " << B_i << "  ;  " << B_j << std::endl;
+        //std::cout << "  Test Location : " << B_i << "  ;  " << B_j << std::endl;
 
 
         //TOP CHECKER
@@ -368,7 +368,7 @@ int main()
             if (ball.getPosition().y < Move_Arr[B_i][B_j].getPosition().y)
             {
                 T_col = true;
-                std::cout << "top collision: " << B_i << " ; " << B_j;
+               // std::cout << "top collision: " << B_i << " ; " << B_j;
                 ball.setPosition(ball.getPosition().x, Move_Arr[B_i][B_j].getPosition().y);
                 ballSpeed.y = -ballSpeed.y * 0;
                 B_i = (102 - ((Wall_Arr[102][0].getPosition().x - ball.getPosition().x)) / rect_W);
@@ -385,7 +385,7 @@ int main()
 
             if (ball.getPosition().x < Move_Arr[B_i + 1][B_j].getPosition().x)
             {
-                std::cout << " Left collision : " << B_i << " ; " << B_j << " ; WX = " << Wall_Arr[B_i][B_j].getPosition().x << " ; WY = " << Wall_Arr[B_i][B_j].getPosition().y << " ; ";
+                //std::cout << " Left collision : " << B_i << " ; " << B_j << " ; WX = " << Wall_Arr[B_i][B_j].getPosition().x << " ; WY = " << Wall_Arr[B_i][B_j].getPosition().y << " ; ";
                 loc = 180 - Move_Arr[B_i + 1][B_j].getPosition().x - 2;
 
                 ball.setRotation(ball.getRotation() - ballSpeed.x);
@@ -410,7 +410,7 @@ int main()
 
             if (ball.getPosition().x > Move_Arr[B_i][B_j].getPosition().x)
             {
-                std::cout << " Right collision : " << B_i + 1 << " ; " << B_j << " ; ";
+                //std::cout << " Right collision : " << B_i + 1 << " ; " << B_j << " ; ";
                 loc = 180 - Move_Arr[B_i][B_j].getPosition().x + 1;
                 ball.setRotation(ball.getRotation() - ballSpeed.x);
                 for (int i = 0; i < w; i++)
@@ -433,7 +433,7 @@ int main()
 
             if (ball.getPosition().x > Move_Arr[B_i][B_j].getPosition().x)
             {
-                std::cout << "top collision right : " << B_i << " ; " << B_j << " ; ";
+                //std::cout << "top collision right : " << B_i << " ; " << B_j << " ; ";
                 ball.setPosition(ball.getPosition().x, Move_Arr[B_i][B_j].getPosition().y);
                 ballSpeed.y = -ballSpeed.y * 0;
                 B_i = (102 - ((Wall_Arr[102][0].getPosition().x - ball.getPosition().x)) / rect_W);
@@ -450,7 +450,7 @@ int main()
 
             if (ball.getPosition().y > Move_Arr[B_i][B_j].getPosition().y)
             {
-                std::cout << "bottom collision : " << B_i << " ; " << B_j + 1 << " ; ";
+                //std::cout << "bottom collision : " << B_i << " ; " << B_j + 1 << " ; ";
                 ball.setPosition(ball.getPosition().x, Move_Arr[B_i][B_j].getPosition().y);
                 ballSpeed.y = -ballSpeed.y * 0.25;
                 B_i = (102 - ((Wall_Arr[102][0].getPosition().x - ball.getPosition().x)) / rect_W);
@@ -473,7 +473,7 @@ int main()
 
             if (ball.getPosition().x > Move_Arr[B_i][B_j].getPosition().x)// && ballSpeed.y > 0)
             {
-                std::cout << "bottom collision right : " << B_i + 1 << " ; " << B_j + 1 << " ; ";
+               // std::cout << "bottom collision right : " << B_i + 1 << " ; " << B_j + 1 << " ; ";
                 ball.setPosition(ball.getPosition().x, Move_Arr[B_i][B_j].getPosition().y);
                 ballSpeed.y = -ballSpeed.y * 0.75;
                 B_i = (102 - ((Wall_Arr[102][0].getPosition().x - ball.getPosition().x)) / rect_W);
@@ -485,10 +485,61 @@ int main()
 
         //Enemy Checker
 
+        int temp_Rotation = ball.getRotation();
+        ball.setRotation(0);
         if (ball.getGlobalBounds().intersects(enemy1.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy2.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy3.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy4.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy5.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy6.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy7.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy8.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy9.getGlobalBounds()))
         {
-            ball.setPosition(ball.getPosition().x, 92);
+            ball.setPosition(rect_W * 2, rect_H);
+            ballSpeed.x = 0;
+            ballSpeed.y = 0;
+
+
+            std::fstream WallReadArray2;
+            WallReadArray2.open("Wall_Arr.txt", std::ios::in);
+            if (!WallReadArray2) {
+                std::cout << "File doesn’t exist.";
+            }
+            std::fstream MoveReadArray2;
+            MoveReadArray2.open("Move_Arr.txt", std::ios::in);
+            if (!WallReadArray2) {
+                std::cout << "File doesn’t exist.";
+            }
+
+
+            for (int i = 0; i < w; i++)
+            {
+                for (int j = 0; j < h; j++)
+                {
+                    WallReadArray2 >> x1;
+                    //std::cout << " Wall["<< i << " ][" << j << "] =  X : " << x1;
+                    if (WallReadArray2.eof())
+                        break;
+                    Wall_Arr[i][j].setPosition(x1, Wall_Arr[i][j].getPosition().y);
+                    WallReadArray2 >> x1;
+                    //std::cout << " :  Y : " << x1 << std::endl;
+                    if (WallReadArray2.eof())
+                        break;
+                    Wall_Arr[i][j].setPosition(Wall_Arr[i][j].getPosition().x, x1);
+
+                    MoveReadArray2 >> x1;
+                    // std::cout << " Move["<< i << " ][" << j << "] =  X : " << x1;
+                    if (MoveReadArray2.eof())
+                        break;
+                    Move_Arr[i][j].setPosition(x1, Move_Arr[i][j].getPosition().y);
+                    MoveReadArray2 >> x1;
+                    // std::cout << " :  Y : " << x1 << std::endl;
+                    if (MoveReadArray2.eof())
+                        break;
+                    Move_Arr[i][j].setPosition(Move_Arr[i][j].getPosition().x, x1);
+                }
+            }
+
+
+            WallReadArray2.close();
+            MoveReadArray2.close();
         }
+        ball.setRotation(temp_Rotation);
+
 
         //MOVE AGAIN
 
@@ -505,7 +556,7 @@ int main()
 
         B_i = (102 - ((Wall_Arr[102][0].getPosition().x - ball.getPosition().x)) / rect_W);
         B_j = ball.getPosition().y / rect_H;
-        std::cout << "  Test Location : " << B_i << "  ;  " << B_j << std::endl;
+        //std::cout << "  Test Location : " << B_i << "  ;  " << B_j << std::endl;
         
          
 
@@ -519,7 +570,7 @@ int main()
             if (ball.getPosition().y < Move_Arr[B_i][B_j].getPosition().y)
             {
                 T_col = true;
-                std::cout << "top collision: " << B_i << " ; " << B_j;
+                //std::cout << "top collision: " << B_i << " ; " << B_j;
                 ball.setPosition(ball.getPosition().x, Move_Arr[B_i][B_j].getPosition().y);
                 ballSpeed.y = -ballSpeed.y * 0;
                 B_i = (102 - ((Wall_Arr[102][0].getPosition().x - ball.getPosition().x)) / rect_W);
@@ -537,7 +588,7 @@ int main()
             {
                 col = true;
                 LE_col = true;
-                std::cout << " Left collision : " << B_i << " ; " << B_j << " ; WX = " << Wall_Arr[B_i][B_j].getPosition().x << " ; WY = " << Wall_Arr[B_i][B_j].getPosition().y << " ; ";
+                //std::cout << " Left collision : " << B_i << " ; " << B_j << " ; WX = " << Wall_Arr[B_i][B_j].getPosition().x << " ; WY = " << Wall_Arr[B_i][B_j].getPosition().y << " ; ";
                 loc = 180 - Move_Arr[B_i + 1][B_j].getPosition().x - 2;
 
                 ball.setRotation(ball.getRotation() - ballSpeed.x);
@@ -564,7 +615,7 @@ int main()
             {
                 col = true;
                 R_col = true;
-                std::cout << " Right collision : " << B_i + 1 << " ; " << B_j << " ; ";
+                //std::cout << " Right collision : " << B_i + 1 << " ; " << B_j << " ; ";
                 loc = 180 - Move_Arr[B_i][B_j].getPosition().x + 1;
                 ball.setRotation(ball.getRotation() - ballSpeed.x);
                 for (int i = 0; i < w; i++)
@@ -588,7 +639,7 @@ int main()
                     if (ball.getPosition().x > Move_Arr[B_i][B_j].getPosition().x)// && ballSpeed.y < 0)
                     {
                         T_col = true;
-                        std::cout << "top collision right : " << B_i << " ; " << B_j << " ; ";
+                        //std::cout << "top collision right : " << B_i << " ; " << B_j << " ; ";
                         ball.setPosition(ball.getPosition().x, Move_Arr[B_i][B_j].getPosition().y);
                         ballSpeed.y = -ballSpeed.y * 0;
                         B_i = (102 - ((Wall_Arr[102][0].getPosition().x - ball.getPosition().x)) / rect_W);
@@ -606,7 +657,7 @@ int main()
                     if (ball.getPosition().y > Move_Arr[B_i][B_j].getPosition().y)
                     {
                         L_col = true;
-                        std::cout << "bottom collision : " << B_i << " ; " << B_j + 1 << " ; ";
+                        //std::cout << "bottom collision : " << B_i << " ; " << B_j + 1 << " ; ";
                         ball.setPosition(ball.getPosition().x, Move_Arr[B_i][B_j].getPosition().y);
                        ballSpeed.y = -ballSpeed.y * 0.25;
                         B_i = (102 - ((Wall_Arr[102][0].getPosition().x - ball.getPosition().x)) / rect_W);
@@ -629,7 +680,7 @@ int main()
                     
                     if (ball.getPosition().x > Move_Arr[B_i][B_j].getPosition().x)
                     {
-                        std::cout << "bottom collision right : " << B_i + 1 << " ; " << B_j + 1 << " ; ";
+                        //std::cout << "bottom collision right : " << B_i + 1 << " ; " << B_j + 1 << " ; ";
                         ball.setPosition(ball.getPosition().x, Move_Arr[B_i][B_j].getPosition().y);
                          ballSpeed.y = -ballSpeed.y * 0.75;
                           B_i = (102 - ((Wall_Arr[102][0].getPosition().x - ball.getPosition().x)) / rect_W);
@@ -640,11 +691,58 @@ int main()
 
 
                 //Enemy Checker
-                int temp_Rotation = ball.getRotation();
+                temp_Rotation = ball.getRotation();
                 ball.setRotation(0);
-                if(ball.getGlobalBounds().intersects(enemy1.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy2.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy3.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy4.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy5.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy6.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy7.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy8.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy9.getGlobalBounds()))
+                if (ball.getGlobalBounds().intersects(enemy1.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy2.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy3.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy4.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy5.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy6.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy7.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy8.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy9.getGlobalBounds()))
                 {
-                    ball.setPosition(ball.getPosition().x, 92);
+                    ball.setPosition(rect_W * 2, rect_H);
+                    ballSpeed.x = 0;
+                    ballSpeed.y = 0;
+
+
+                    std::fstream WallReadArray2;
+                    WallReadArray2.open("Wall_Arr.txt", std::ios::in);
+                    if (!WallReadArray2) {
+                        std::cout << "File doesn’t exist.";
+                    }
+                    std::fstream MoveReadArray2;
+                    MoveReadArray2.open("Move_Arr.txt", std::ios::in);
+                    if (!WallReadArray2) {
+                        std::cout << "File doesn’t exist.";
+                    }
+
+
+                    for (int i = 0; i < w; i++)
+                    {
+                        for (int j = 0; j < h; j++)
+                        {
+                            WallReadArray2 >> x1;
+                            //std::cout << " Wall["<< i << " ][" << j << "] =  X : " << x1;
+                            if (WallReadArray2.eof())
+                                break;
+                            Wall_Arr[i][j].setPosition(x1, Wall_Arr[i][j].getPosition().y);
+                            WallReadArray2 >> x1;
+                            //std::cout << " :  Y : " << x1 << std::endl;
+                            if (WallReadArray2.eof())
+                                break;
+                            Wall_Arr[i][j].setPosition(Wall_Arr[i][j].getPosition().x, x1);
+
+                            MoveReadArray2 >> x1;
+                            // std::cout << " Move["<< i << " ][" << j << "] =  X : " << x1;
+                            if (MoveReadArray2.eof())
+                                break;
+                            Move_Arr[i][j].setPosition(x1, Move_Arr[i][j].getPosition().y);
+                            MoveReadArray2 >> x1;
+                            // std::cout << " :  Y : " << x1 << std::endl;
+                            if (MoveReadArray2.eof())
+                                break;
+                            Move_Arr[i][j].setPosition(Move_Arr[i][j].getPosition().x, x1);
+                        }
+                    }
+                    
+                    
+                    WallReadArray2.close();
+                    MoveReadArray2.close();
                 }
                 ball.setRotation(temp_Rotation);
 
@@ -675,9 +773,9 @@ int main()
                 ground = false;
             
 
-            std::cout << std::endl << " Wall_Arr[102][0] Position X : " << Wall_Arr[102][0].getPosition().x << std::endl;
+            //std::cout << std::endl << " Wall_Arr[102][0] Position X : " << Wall_Arr[102][0].getPosition().x << std::endl;
 
-            std::cout << "Iteration = " << it <<" ; Ball Position X = " << ball.getPosition().x << " ; Ball Position Y = " << ball.getPosition().y << " ; BallSpeed X= " << ballSpeed.x << " ; BallSpeed Y= " << ballSpeed.y << " ; " << "B_i = " << B_i << " ; B_j= " << B_j << " ; " << std::endl;
+            //std::cout << "Iteration = " << it <<" ; Ball Position X = " << ball.getPosition().x << " ; Ball Position Y = " << ball.getPosition().y << " ; BallSpeed X= " << ballSpeed.x << " ; BallSpeed Y= " << ballSpeed.y << " ; " << "B_i = " << B_i << " ; B_j= " << B_j << " ; " << std::endl;
             
 
             it++;
@@ -692,6 +790,8 @@ int main()
             enemy7.setPosition(Move_Arr[58][6].getPosition().x, Move_Arr[58][6].getPosition().y);
             enemy8.setPosition(Move_Arr[85][5].getPosition().x, Move_Arr[85][5].getPosition().y);
             enemy9.setPosition(Move_Arr[96][5].getPosition().x, Move_Arr[96][5].getPosition().y);
+
+            
 
             Window.clear();//sf::Color(200,70,70));
            
@@ -734,3 +834,5 @@ int main()
     }
     return 0;
 }
+
+
