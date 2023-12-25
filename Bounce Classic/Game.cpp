@@ -22,6 +22,8 @@ sf::RectangleShape grass9_Arr[w];
 sf::RectangleShape grass10_Arr[w];
 sf::RectangleShape grass11_Arr[w];
 
+
+
 int main()
 {
     int Width = 1080;
@@ -40,6 +42,7 @@ int main()
     int grt = 0;
     sf::Vector2f size(rect_W, rect_H);
     sf::Vector2f ballSpeed(0, 0);
+    sf::Vector2f wallSpeed(0, 0);
     bool ground = false;
     int B_i = 0;
     int B_j = 0;
@@ -49,6 +52,7 @@ int main()
     int fps = 60;
     int loc = 0;
     int loc2 = 0;
+    int rings = 0;
     bool col = false;
     bool E_col = false;
     bool L_col = false;
@@ -103,6 +107,7 @@ int main()
     Gback.setSmooth(true);
     Gback1.setTexture(&Gback);
     Gback.setRepeated(true);
+    Gback1.setFillColor(sf::Color(255, 255, 255,150));
 
     sf::RectangleShape back4(sf::Vector2f(1080, 720));
     sf::Texture texture4;
@@ -214,6 +219,35 @@ int main()
         std::cout << "grass BRUH11" << std::endl;
     grass11.setSmooth(true);
     grass11.setRepeated(true);
+
+    sf::RectangleShape ring1(sf::Vector2f(10, 10));
+    sf::RectangleShape ring2(sf::Vector2f(10, 10));
+    sf::RectangleShape ring3(sf::Vector2f(10, 10));
+    sf::RectangleShape ring4(sf::Vector2f(10, 10));
+    sf::RectangleShape ring5(sf::Vector2f(10, 10));
+    sf::RectangleShape ring6(sf::Vector2f(10, 10));
+    
+   
+    sf::RectangleShape ringR1(sf::Vector2f(180, 180));
+    sf::Texture ringRT;
+    if (!ringRT.loadFromFile("ring.png"))
+        std::cout << "RING BRUH" << std::endl;
+    ringRT.setSmooth(true);
+    ringR1.setTexture(&ringRT);
+
+    sf::RectangleShape ringR2(sf::Vector2f(180, 180));
+    ringR2.setTexture(&ringRT);
+
+    sf::RectangleShape ringR3(sf::Vector2f(180, 180));
+    ringR3.setTexture(&ringRT);
+
+    sf::RectangleShape ringR4(sf::Vector2f(180, 180));
+    ringR4.setTexture(&ringRT);
+
+    sf::RectangleShape ringR5(sf::Vector2f(180, 180));
+    ringR5.setTexture(&ringRT);
+
+    
 
     sf::CircleShape ball(rect_W / 2);
     ball.setPosition(rect_W*2, rect_H);
@@ -420,7 +454,6 @@ int main()
         ballSpeed.x = ballSpeed.x * 0.25;
         if (ballSpeed.y < 50 && ground != true)
         {
-
             ballSpeed.y += rect_W * 0.015;
 
         }
@@ -436,7 +469,12 @@ int main()
 
         //KEYPRESS CHECK
 
-
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && it - temp_it > 10)
+            {
+                B_i = (102 - ((Wall_Arr[102][0].getPosition().x - ball.getPosition().x)) / rect_W);
+                B_j = ball.getPosition().y / rect_H;
+                std::cout << B_i << " ; " << B_j << std::endl;
+            }
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right)) 
             {
                 ballSpeed.x = -rect_W * 0.20; //0.25
@@ -680,7 +718,7 @@ int main()
 
         B_i = (102 - ((Wall_Arr[102][0].getPosition().x - ball.getPosition().x)) / rect_W);
         B_j = ball.getPosition().y / rect_H;
-        //std::cout << std::endl << "Test Location 2 : " << B_i << "  ;  " << B_j ;
+       // std::cout << std::endl << "Test Location 2 : " << B_i << "  ;  " << B_j ;
         
          
 
@@ -834,6 +872,71 @@ int main()
                     }
 
                 }
+                
+
+
+                //END LEVEL
+
+                if (B_i == 101 && B_j == 6)
+                    break;
+
+                if (ringR1.getPosition().x + 90 < ball.getPosition().x)
+                {
+                    ringR1.setFillColor(sf::Color(255, 255, 255));
+                    rings = 1;
+                    if (ringR2.getPosition().x + 90 < ball.getPosition().x)
+                    {
+                        ringR2.setFillColor(sf::Color(255, 255, 255));
+                        rings = 2;
+                        if (ringR3.getPosition().x + 90 < ball.getPosition().x)
+                        {
+                            ringR3.setFillColor(sf::Color(255, 255, 255));
+                            rings = 3;
+                            if (ringR4.getPosition().x + 90 < ball.getPosition().x)
+                            {
+                                ringR4.setFillColor(sf::Color(255, 255, 255));
+                                rings = 4;
+                                if (ringR5.getPosition().x + 90 < ball.getPosition().x)
+                                {
+                                    ringR5.setFillColor(sf::Color(255, 255, 255));
+                                    rings = 5;
+                                }
+                                else
+                                {
+                                    ringR5.setFillColor(sf::Color(100, 100, 100));
+                                    rings = 4;
+                                }
+                            }
+                            else
+                            {
+                                ringR4.setFillColor(sf::Color(100, 100, 100));
+                                rings = 3;
+                            }
+                        }
+                        else
+                        {
+                            ringR3.setFillColor(sf::Color(100, 100, 100));
+                            rings = 2;
+                        }
+
+                    }
+                    else
+                    {
+                        ringR2.setFillColor(sf::Color(100, 100, 100));
+                        rings = 1;
+                    }
+                                        
+                    
+                }
+                else
+                {
+                    ringR1.setFillColor(sf::Color(100, 100, 100));
+                    rings = 0;
+                }
+                
+
+                
+
                 //Enemy Checker
                 int temp_Rotation = ball.getRotation();
                 ball.setRotation(0);
@@ -939,6 +1042,7 @@ int main()
 
             //std::cout << " ; Iteration = " << it <<" ; Ball Position X = " << ball.getPosition().x << " ; Ball Position Y = " << ball.getPosition().y << " ; BallSpeed X= " << ballSpeed.x << " ; BallSpeed Y= " << ballSpeed.y << " ; " << "B_i = " << B_i << " ; B_j= " << B_j << " ; " << std::endl;
             
+            std::cout << rings << std::endl;
 
             it++;
             
@@ -952,6 +1056,7 @@ int main()
             enemy7.setPosition(Move_Arr[58][6].getPosition().x, Move_Arr[58][6].getPosition().y);
             enemy8.setPosition(Move_Arr[85][5].getPosition().x, Move_Arr[85][5].getPosition().y);
             enemy9.setPosition(Move_Arr[96][5].getPosition().x, Move_Arr[96][5].getPosition().y);
+            
 
 
             Window.clear();//sf::Color(200,70,70));
@@ -980,14 +1085,28 @@ int main()
             Window.draw(enemy9);
 
             enemyTR.setPosition(enemy1.getPosition().x - 30, enemy1.getPosition().y - 135);
-            Window.draw(enemyTR);
+            //Window.draw(enemyTR);
 
 
             //SET AND DRAW TEXTURES
 
-            for (int i = 0; i < (w - 10); i++)
+           // ring1.setPosition(Wall_Arr[8][7].getPosition().x, Wall_Arr[8][7].getPosition().y - 190);
+            ringR1.setPosition(Wall_Arr[8][7].getPosition().x - 90, Wall_Arr[8][7].getPosition().y - 210);
+            ringR2.setPosition(Wall_Arr[31][4].getPosition().x, Wall_Arr[31][4].getPosition().y - 230);
+            ringR3.setPosition(Wall_Arr[72][7].getPosition().x - 45, Wall_Arr[72][7].getPosition().y - 230);
+            ringR4.setPosition(Wall_Arr[88][7].getPosition().x + 45, Wall_Arr[88][7].getPosition().y - 230);
+            ringR5.setPosition(Wall_Arr[92][7].getPosition().x - 135, Wall_Arr[92][7].getPosition().y - 230);
+
+            Window.draw(ringR1);
+            Window.draw(ringR2);
+            Window.draw(ringR3);
+            Window.draw(ringR4);
+            Window.draw(ringR5);
+
+            for (int i = 0; i < w; i++)
                 for (int j = 0; j < h; j++)
                 {
+                    
                     if (Wall_Arr[i][j].getPosition().x > -rect_W  && Wall_Arr[i][j].getPosition().x < Width + rect_W)
                     {
                     
@@ -997,7 +1116,8 @@ int main()
                             grass7_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 45, Wall_Arr[i][j].getPosition().y - 45);
                             Window.draw(grass7_Arr[i]);
                         }
-
+                        //if(j!=0 && Move_Arr[i][j-1].getGlobalBounds().intersects(enemy1.getGlobalBounds()) != true && Move_Arr[i][j - 1].getGlobalBounds().intersects(enemy2.getGlobalBounds()) != true && Move_Arr[i][j - 1].getGlobalBounds().intersects(enemy3.getGlobalBounds()) != true && Move_Arr[i][j - 1].getGlobalBounds().intersects(enemy4.getGlobalBounds()) != true && Move_Arr[i][j - 1].getGlobalBounds().intersects(enemy5.getGlobalBounds()) != true && Move_Arr[i][j - 1].getGlobalBounds().intersects(enemy6.getGlobalBounds()) != true && Move_Arr[i][j - 1].getGlobalBounds().intersects(enemy7.getGlobalBounds()) != true && Move_Arr[i][j - 1].getGlobalBounds().intersects(enemy8.getGlobalBounds()) != true)
+                        //{ 
                         if (j == 7)
                         {
 
@@ -1013,16 +1133,18 @@ int main()
 
                         if (i != 0 && j != 7 && j != 0)
                         {
-                           
-                            if (Wall_Arr[i][j].getPosition().x > -5000 && Wall_Arr[i - 1][j].getPosition().x <= -5000 && Wall_Arr[i][j+1].getPosition().x > -5000)
+
+                            if (Wall_Arr[i][j].getPosition().x > -5000 && Wall_Arr[i - 1][j].getPosition().x <= -5000 && Wall_Arr[i][j + 1].getPosition().x > -5000)
                             {
-                                grass3_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 135, Wall_Arr[i][j].getPosition().y - 45);
+                                grass3_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 135, Wall_Arr[i][j].getPosition().y - 45 );
+                                if(grass3_Arr[i].getGlobalBounds().intersects(enemy8.getGlobalBounds()) != true && grass3_Arr[i].getGlobalBounds().intersects(enemy9.getGlobalBounds()) != true)
                                 Window.draw(grass3_Arr[i]);
                             }
 
                             if (Wall_Arr[i][j].getPosition().x > -5000 && Wall_Arr[i + 1][j].getPosition().x <= -5000 && Wall_Arr[i][j + 1].getPosition().x > -5000)
                             {
                                 grass4_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 45, Wall_Arr[i][j].getPosition().y - 45);
+                                if (grass4_Arr[i].getGlobalBounds().intersects(enemy9.getGlobalBounds()) != true && grass4_Arr[i].getGlobalBounds().intersects(enemy8.getGlobalBounds()) != true)
                                 Window.draw(grass4_Arr[i]);
                             }
 
@@ -1030,6 +1152,7 @@ int main()
                             {
 
                                 grass5_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 135, Wall_Arr[i][j].getPosition().y - 135);
+                                if (grass5_Arr[i].getGlobalBounds().intersects(enemy8.getGlobalBounds()) != true && grass5_Arr[i].getGlobalBounds().intersects(enemy9.getGlobalBounds()) != true)
                                 Window.draw(grass5_Arr[i]);
                             }
 
@@ -1037,6 +1160,7 @@ int main()
                             {
 
                                 grass6_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 45, Wall_Arr[i][j].getPosition().y - 135);
+                                if (grass6_Arr[i].getGlobalBounds().intersects(enemy8.getGlobalBounds()) != true && grass6_Arr[i].getGlobalBounds().intersects(enemy9.getGlobalBounds()) != true)
                                 Window.draw(grass6_Arr[i]);
                             }
 
@@ -1072,7 +1196,7 @@ int main()
                                 Window.draw(grass1_Arr[i]);
 
                             }
-                            
+
                             if (Wall_Arr[i][j].getPosition().x > -5000 && Wall_Arr[i - 1][j].getPosition().x > -5000 && Wall_Arr[i + 1][j].getPosition().x > -5000 && Wall_Arr[i][j + 1].getPosition().x <= -5000)
                             {
                                 grass2_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 45, Wall_Arr[i][j].getPosition().y - 45);
@@ -1080,6 +1204,7 @@ int main()
                             }
 
                         }
+                        //}
 
                     }
                     /* if (Move_Arr[i][j].getPosition().x > -rect_W && Move_Arr[i][j].getPosition().x < Width + rect_W)
@@ -1096,7 +1221,12 @@ int main()
      
                 ballL.setPosition(ball.getPosition().x - 180, ball.getPosition().y - 180);
                 Window.draw(ballL);
-           // Window.draw(ball);
+
+
+
+               
+                
+                // Window.draw(ball);
            
             /*
             
@@ -1110,8 +1240,12 @@ int main()
             Window.draw(enemy8);
             Window.draw(enemy9);
 */
+           
 
-        
+            //ring12.setPosition(Wall_Arr[8][7].getPosition().x, Wall_Arr[8][7].getPosition().y - 55);
+            
+           
+           // Window.draw(ring1);
 
             Window.display();
 
