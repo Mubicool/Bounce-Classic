@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <iostream>
 #include<cstdlib>
 #include<cmath>
@@ -42,6 +43,8 @@ int main()
     int g = 0;
     int gr = 0;
     int grt = 0;
+    int G_SI = 0;
+    int T_SI = 0;
     sf::Vector2f size(rect_W, rect_H);
     sf::Vector2f ballSpeed(0, 0);
     sf::Vector2f wallSpeed(0, 0);
@@ -66,6 +69,47 @@ int main()
     Window.setFramerateLimit(fps);
 
 
+    sf::SoundBuffer top_sound;
+    if (!top_sound.loadFromFile("glass_sound.wav"))
+        std::cout << "sound top" << std::endl;
+    sf::Sound glass_sound;
+    glass_sound.setBuffer(top_sound);
+
+    sf::SoundBuffer bottom_sound;
+    if (!bottom_sound.loadFromFile("thud_sound.wav"))
+        std::cout << "sound bottom" << std::endl;
+    sf::Sound thud_sound;
+    thud_sound.setBuffer(bottom_sound);
+
+    sf::SoundBuffer glass_breaksound;
+    if (!glass_breaksound.loadFromFile("glass_breaksound.wav"))
+        std::cout << "sound break" << std::endl;
+    sf::Sound break_sound;
+    break_sound.setBuffer(glass_breaksound);
+
+    
+
+    sf::Music down_sound;
+    if (!down_sound.openFromFile("down_whoosh_sound.wav"))
+        std::cout << "sound down_whoosh_sound" << std::endl;
+    
+    
+
+
+    sf::Music crick;
+    if (!crick.openFromFile("crickets_sound.wav"))
+        return -1; // error
+    crick.setLoop(true);
+    crick.play();
+
+    sf::Music music;
+    if (!music.openFromFile("music_P.wav"))
+        return -1; // error
+    music.setLoop(true);
+    music.play();
+
+    
+
     sf::Texture ballT;
     if (!ballT.loadFromFile("ball.png"))
         std::cout << "SMALL BRUH" << std::endl;
@@ -78,7 +122,7 @@ int main()
         
         life_Arr[i].setRadius(20);
         life_Arr[i].setFillColor(sf::Color(255, 255, 255));
-        life_Arr[i].setPosition(45 * i + 45, 20);
+        life_Arr[i].setPosition(45 * i + 20, 10);
         life_Arr[i].setTexture(&ballT);
     }
 
@@ -110,14 +154,31 @@ int main()
     enemy9.setFillColor(sf::Color(0, 0, 0));
     enemy9.setOrigin(enemy9.getSize().x / 2, enemy9.getSize().y / 2);
 
-
-    sf::RectangleShape enemyTR(sf::Vector2f(60, 135));
     sf::Texture enemyT;
     if (!enemyT.loadFromFile("enemy.png"))
         std::cout << "enemyT BRUH 4" << std::endl;
     enemyT.setSmooth(true);
-    enemyTR.setTexture(&enemyT);
     enemyT.setRepeated(true);
+
+    sf::RectangleShape enemyTR1(sf::Vector2f(30, 135));
+    enemyTR1.setTexture(&enemyT);
+    sf::RectangleShape enemyTR2(sf::Vector2f(30, 135));
+    enemyTR2.setTexture(&enemyT);
+    sf::RectangleShape enemyTR3(sf::Vector2f(30, 135));
+    enemyTR3.setTexture(&enemyT);
+    sf::RectangleShape enemyTR4(sf::Vector2f(30, 135));
+    enemyTR4.setTexture(&enemyT);
+    sf::RectangleShape enemyTR5(sf::Vector2f(30, 135));
+    enemyTR5.setTexture(&enemyT);
+    sf::RectangleShape enemyTR6(sf::Vector2f(30, 135));
+    enemyTR6.setTexture(&enemyT);
+    sf::RectangleShape enemyTR7(sf::Vector2f(30, 135));
+    enemyTR7.setTexture(&enemyT);
+    sf::RectangleShape enemyTR8(sf::Vector2f(30, 135));
+    enemyTR8.setTexture(&enemyT);
+    sf::RectangleShape enemyTR9(sf::Vector2f(30, 135));
+    enemyTR9.setTexture(&enemyT);
+    
 
     sf::RectangleShape Gback1(sf::Vector2f(1080, 720));
     sf::Texture Gback;
@@ -126,7 +187,7 @@ int main()
     Gback.setSmooth(true);
     Gback1.setTexture(&Gback);
     Gback.setRepeated(true);
-    Gback1.setFillColor(sf::Color(255, 255, 255, 150));
+    Gback1.setFillColor(sf::Color(255, 255, 255, 100));
 
    
     sf::RectangleShape back4(sf::Vector2f(1080, 720));
@@ -284,10 +345,36 @@ int main()
     balll.setSmooth(true);
     balll.setRepeated(true);
     ballL.setTexture(&balll);
-    ballL.setFillColor(sf::Color(250, 255, 150, 85));
+    ballL.setFillColor(sf::Color(200, 250, 250, 70));
 
 
-
+    sf::CircleShape enemy1L(rect_W * 2);
+    enemy1L.setTexture(&balll);
+    enemy1L.setFillColor(sf::Color(170, 200, 100, 70));
+    sf::CircleShape enemy2L(rect_W * 2);
+    enemy2L.setTexture(&balll);
+    enemy2L.setFillColor(sf::Color(170, 200, 100, 70));
+    sf::CircleShape enemy3L(rect_W * 2);
+    enemy3L.setTexture(&balll);
+    enemy3L.setFillColor(sf::Color(170, 200, 100, 70));
+    sf::CircleShape enemy4L(rect_W * 2);
+    enemy4L.setTexture(&balll);
+    enemy4L.setFillColor(sf::Color(170, 200, 100, 70));
+    sf::CircleShape enemy5L(rect_W * 2);
+    enemy5L.setTexture(&balll);
+    enemy5L.setFillColor(sf::Color(170, 200, 100, 70));
+    sf::CircleShape enemy6L(rect_W * 2);
+    enemy6L.setTexture(&balll);
+    enemy6L.setFillColor(sf::Color(170, 200, 100, 70));
+    sf::CircleShape enemy7L(rect_W * 2);
+    enemy7L.setTexture(&balll);
+    enemy7L.setFillColor(sf::Color(170, 200, 100, 70));
+    sf::CircleShape enemy8L(rect_W * 2);
+    enemy8L.setTexture(&balll);
+    enemy8L.setFillColor(sf::Color(170, 200, 100, 70));
+    sf::CircleShape enemy9L(rect_W * 2);
+    enemy9L.setTexture(&balll);
+    enemy9L.setFillColor(sf::Color(170, 200, 100, 70));
 
     //srand((unsigned)time(NULL));
 
@@ -467,11 +554,20 @@ int main()
 
         }
 
+        if (ballSpeed.y > 0 && down_sound.getStatus() != sf::Music::Status::Playing)
+            down_sound.play();
+
+        else
+            down_sound.stop();
+
+       
+       
 
         ballSpeed.x = ballSpeed.x * 0.25;
         if (ballSpeed.y < 50 && ground != true)
         {
             ballSpeed.y += rect_W * 0.015;
+
 
         }
         if (ballSpeed.y > 50 || ballSpeed.y < -50) {
@@ -494,20 +590,23 @@ int main()
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
         {
+            
             ballSpeed.x = -rect_W * 0.20; //0.25
             r = it;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
         {
+            
             ballSpeed.x = rect_W * 0.20; //0.25
             l = it;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up) && col != false)
         {
 
-
+            
             if (ball.getPosition().y > 20)
             {
+               
                 ground = false;
                 ballSpeed.y = -(rect_W / 2.8);
                 col = false;
@@ -580,7 +679,9 @@ int main()
 
             if (ball.getPosition().y < Move_Arr[B_i][B_j].getPosition().y)
             {
-
+                if (it - T_SI > 10)
+                   
+                    glass_sound.play();
                 //std::cout << " ; top collision : " << B_i << " ; " << B_j;
                 ball.setPosition(ball.getPosition().x, Move_Arr[B_i][B_j].getPosition().y);
                 ballSpeed.y = -ballSpeed.y * 0;
@@ -588,6 +689,7 @@ int main()
                 B_j = ball.getPosition().y / rect_H;
                 top = 5;
                 ball.setRotation(ball.getRotation() - ballSpeed.x);
+                T_SI = it;
             }
         }
 
@@ -646,12 +748,15 @@ int main()
 
             if (ball.getPosition().x > Move_Arr[B_i][B_j].getPosition().x)
             {
+                if (it - T_SI > 10)
+                    glass_sound.play();
                 //std::cout << " ; top collision right : " << B_i << " ; " << B_j << " ; ";
                 ball.setPosition(ball.getPosition().x, Move_Arr[B_i][B_j].getPosition().y);
                 ballSpeed.y = -ballSpeed.y * 0;
                 B_i = (102 - ((Wall_Arr[102][0].getPosition().x - ball.getPosition().x)) / rect_W);
                 B_j = ball.getPosition().y / rect_H;
                 ball.setRotation(ball.getRotation() - ballSpeed.x);
+                T_SI = it;
             }
         }
 
@@ -667,6 +772,8 @@ int main()
             {
                 if (ball.getPosition().y > Move_Arr[B_i][B_j].getPosition().y)
                 {
+                    if (ground != true)
+                        thud_sound.play();
                     col = true;
                     //std::cout << " ; bottom collision : " << B_i << " ; " << B_j + 1 << " ; ";
                     ball.setPosition(ball.getPosition().x, Move_Arr[B_i][B_j].getPosition().y);
@@ -702,6 +809,7 @@ int main()
 
                 if (ball.getPosition().x > Move_Arr[B_i][B_j].getPosition().x && ballSpeed.y > 0)
                 {
+                    
                     col = true;
                     //std::cout << " ; bottom collision right : " << B_i + 1 << " ; " << B_j + 1 << " ; ";
                     ball.setPosition(ball.getPosition().x, Move_Arr[B_i][B_j].getPosition().y);
@@ -748,13 +856,15 @@ int main()
 
             if (ball.getPosition().y < Move_Arr[B_i][B_j].getPosition().y)
             {
-
+                if (it - T_SI > 10)
+                    glass_sound.play();
                 //std::cout << " ; top collision: " << B_i << " ; " << B_j;
                 ball.setPosition(ball.getPosition().x, Move_Arr[B_i][B_j].getPosition().y);
                 ballSpeed.y = -ballSpeed.y * 0;
                 B_i = (102 - ((Wall_Arr[102][0].getPosition().x - ball.getPosition().x)) / rect_W);
                 B_j = ball.getPosition().y / rect_H;
                 ball.setRotation(ball.getRotation() - ballSpeed.x);
+                T_SI = it;
             }
         }
         //LEFT CHECKER
@@ -816,13 +926,15 @@ int main()
 
             if (ball.getPosition().x > Move_Arr[B_i][B_j].getPosition().x)// && ballSpeed.y < 0)
             {
-
+                if (it - T_SI > 10)
+                    glass_sound.play();
                 //std::cout << " ; top collision right : " << B_i << " ; " << B_j << " ; ";
                 ball.setPosition(ball.getPosition().x, Move_Arr[B_i][B_j].getPosition().y);
                 ballSpeed.y = -ballSpeed.y * 0;
                 B_i = (102 - ((Wall_Arr[102][0].getPosition().x - ball.getPosition().x)) / rect_W);
                 B_j = ball.getPosition().y / rect_H;
                 ball.setRotation(ball.getRotation() - ballSpeed.x);
+                T_SI = it;
             }
         }
 
@@ -838,6 +950,8 @@ int main()
             {
                 if (ball.getPosition().y > Move_Arr[B_i][B_j].getPosition().y)
                 {
+                    if (ground != true)
+                        thud_sound.play();
                     col = true;
                     //std::cout << " ; bottom collision : " << B_i << " ; " << B_j + 1 << " ; ";
                     ball.setPosition(ball.getPosition().x, Move_Arr[B_i][B_j].getPosition().y);
@@ -873,6 +987,7 @@ int main()
 
                 if (ball.getPosition().x > Move_Arr[B_i][B_j].getPosition().x && ballSpeed.y > 0)
                 {
+                    
                     col = true;
                     //std::cout << " ; bottom collision right : " << B_i + 1 << " ; " << B_j + 1 << " ; ";
                     ball.setPosition(ball.getPosition().x, Move_Arr[B_i][B_j].getPosition().y);
@@ -959,6 +1074,7 @@ int main()
         ball.setRotation(0);
         if (ball.getGlobalBounds().intersects(enemy1.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy2.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy3.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy4.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy5.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy6.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy7.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy8.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy9.getGlobalBounds()))
         {
+            break_sound.play();
             life--;
             life_Arr[life].setPosition(-100,-100);
             if (life == 0)
@@ -1062,7 +1178,7 @@ int main()
 
         //std::cout << " ; Iteration = " << it <<" ; Ball Position X = " << ball.getPosition().x << " ; Ball Position Y = " << ball.getPosition().y << " ; BallSpeed X= " << ballSpeed.x << " ; BallSpeed Y= " << ballSpeed.y << " ; " << "B_i = " << B_i << " ; B_j= " << B_j << " ; " << std::endl;
 
-        std::cout << rings << std::endl;
+       // std::cout << rings << std::endl;
 
         it++;
 
@@ -1077,8 +1193,9 @@ int main()
         enemy8.setPosition(Move_Arr[85][5].getPosition().x, Move_Arr[85][5].getPosition().y);
         enemy9.setPosition(Move_Arr[96][5].getPosition().x, Move_Arr[96][5].getPosition().y);
 
-
-
+        
+            
+       
         Window.clear();// sf::Color(0, 0, 0, 255));
 
         /* Window.draw(back1);
@@ -1104,10 +1221,43 @@ int main()
         Window.draw(enemy8);
         Window.draw(enemy9);
 
-        enemyTR.setPosition(enemy1.getPosition().x - 30, enemy1.getPosition().y - 135);
-        //Window.draw(enemyTR);
+        enemyTR1.setPosition(enemy1.getPosition().x - 15, enemy1.getPosition().y - 90);
+        Window.draw(enemyTR1);
+        enemyTR2.setPosition(enemy2.getPosition().x - 15, enemy2.getPosition().y - 90);
+        Window.draw(enemyTR2);
+        enemyTR3.setPosition(enemy3.getPosition().x - 15, enemy3.getPosition().y - 90);
+        Window.draw(enemyTR3);
+        enemyTR4.setPosition(enemy4.getPosition().x - 15, enemy4.getPosition().y - 90);
+        Window.draw(enemyTR4);
+        enemyTR5.setPosition(enemy5.getPosition().x - 15, enemy5.getPosition().y - 90);
+        Window.draw(enemyTR5);
+        enemyTR6.setPosition(enemy6.getPosition().x - 15, enemy6.getPosition().y - 90);
+        Window.draw(enemyTR6);
+        enemyTR7.setPosition(enemy7.getPosition().x - 15, enemy7.getPosition().y - 90);
+        Window.draw(enemyTR7);
+        enemyTR8.setPosition(enemy8.getPosition().x - 15, enemy8.getPosition().y - 90);
+        Window.draw(enemyTR8);
+        enemyTR9.setPosition(enemy9.getPosition().x - 15, enemy9.getPosition().y - 90);
+        Window.draw(enemyTR9);
 
-
+        enemy1L.setPosition(enemy1.getPosition().x - 180, enemy1.getPosition().y - 245);
+        Window.draw(enemy1L);
+        enemy2L.setPosition(enemy2.getPosition().x - 180, enemy2.getPosition().y - 245);
+        Window.draw(enemy2L);
+        enemy3L.setPosition(enemy3.getPosition().x - 180, enemy3.getPosition().y - 245);
+        Window.draw(enemy3L);
+        enemy4L.setPosition(enemy4.getPosition().x - 180, enemy4.getPosition().y - 245);
+        Window.draw(enemy4L);
+        enemy5L.setPosition(enemy5.getPosition().x - 180, enemy5.getPosition().y - 245);
+        Window.draw(enemy5L);
+        enemy6L.setPosition(enemy6.getPosition().x - 180, enemy6.getPosition().y - 245);
+        Window.draw(enemy6L);
+        enemy7L.setPosition(enemy7.getPosition().x - 180, enemy7.getPosition().y - 245);
+        Window.draw(enemy7L);
+        enemy8L.setPosition(enemy8.getPosition().x - 180, enemy8.getPosition().y - 245);
+        Window.draw(enemy8L);
+        enemy9L.setPosition(enemy9.getPosition().x - 180, enemy9.getPosition().y - 245);
+        Window.draw(enemy9L);
         //SET AND DRAW TEXTURES
 
        // ring1.setPosition(Wall_Arr[8][7].getPosition().x, Wall_Arr[8][7].getPosition().y - 190);
@@ -1157,14 +1307,14 @@ int main()
                         if (Wall_Arr[i][j].getPosition().x > -5000 && Wall_Arr[i - 1][j].getPosition().x <= -5000 && Wall_Arr[i][j + 1].getPosition().x > -5000)
                         {
                             grass3_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 135, Wall_Arr[i][j].getPosition().y - 45);
-                            if (grass3_Arr[i].getGlobalBounds().intersects(enemy8.getGlobalBounds()) != true && grass3_Arr[i].getGlobalBounds().intersects(enemy9.getGlobalBounds()) != true)
+                           
                                 Window.draw(grass3_Arr[i]);
                         }
 
                         if (Wall_Arr[i][j].getPosition().x > -5000 && Wall_Arr[i + 1][j].getPosition().x <= -5000 && Wall_Arr[i][j + 1].getPosition().x > -5000)
                         {
                             grass4_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 45, Wall_Arr[i][j].getPosition().y - 45);
-                            if (grass4_Arr[i].getGlobalBounds().intersects(enemy9.getGlobalBounds()) != true && grass4_Arr[i].getGlobalBounds().intersects(enemy8.getGlobalBounds()) != true)
+                           
                                 Window.draw(grass4_Arr[i]);
                         }
 
@@ -1172,7 +1322,7 @@ int main()
                         {
 
                             grass5_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 135, Wall_Arr[i][j].getPosition().y - 135);
-                            if (grass5_Arr[i].getGlobalBounds().intersects(enemy8.getGlobalBounds()) != true && grass5_Arr[i].getGlobalBounds().intersects(enemy9.getGlobalBounds()) != true)
+                           
                                 Window.draw(grass5_Arr[i]);
                         }
 
@@ -1180,7 +1330,7 @@ int main()
                         {
 
                             grass6_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 45, Wall_Arr[i][j].getPosition().y - 135);
-                            if (grass6_Arr[i].getGlobalBounds().intersects(enemy8.getGlobalBounds()) != true && grass6_Arr[i].getGlobalBounds().intersects(enemy9.getGlobalBounds()) != true)
+                           // if (grass6_Arr[i].getGlobalBounds().intersects(enemy8.getGlobalBounds()) != true && grass6_Arr[i].getGlobalBounds().intersects(enemy9.getGlobalBounds()) != true)
                                 Window.draw(grass6_Arr[i]);
                         }
 
