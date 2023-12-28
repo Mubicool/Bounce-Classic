@@ -4,6 +4,7 @@
 ![image](https://github.com/Mubicool/Bounce-Classic/assets/62619170/546bf9bb-d43e-4f95-8508-03c8b04353e3)
 # Project Under Development
 ## Remaining :
+### Fixing the ball in middle of the window 
 ### Easy Integration of Levels(Different Tile Maps)
 ### Movement of the Tiles in Y axis
 ### Fixing one rare yet critical bug
