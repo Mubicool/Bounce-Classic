@@ -4,11 +4,11 @@
 ![image](https://github.com/Mubicool/Bounce-Classic/assets/62619170/546bf9bb-d43e-4f95-8508-03c8b04353e3)
 # Project Under Development
 ## Remaining :
-### * Easy Integration of Levels(Different Tile Maps)
-### + Movement of the Tiles in Y axis
-### - Fixing one rare yet critical bug
-### + Seamless Textures
-### * Using non-Copyrighted Music and Sound Effects
+### Easy Integration of Levels(Different Tile Maps)
+### Movement of the Tiles in Y axis
+### Fixing one rare yet critical bug
+### Seamless Textures
+### Using non-Copyrighted Music and Sound Effects
 
 ![image](https://github.com/Mubicool/Bounce-Classic/assets/62619170/7d2688a4-9f0f-437e-9f25-af93ba6cc109)
 # Requires SFML
