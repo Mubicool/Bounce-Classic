@@ -1,4 +1,4 @@
-#include <SFML/Graphics.hpp>
+﻿#include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <iostream>
 #include<cstdlib>
@@ -10,6 +10,7 @@
 const int w = 113;
 const int h = 8;
 const int li = 3;
+const int e = 9;
 sf::RectangleShape Move_Arr[w][h];
 sf::RectangleShape Wall_Arr[w][h];
 sf::RectangleShape grass1_Arr[w];
@@ -24,8 +25,9 @@ sf::RectangleShape grass9_Arr[w];
 sf::RectangleShape grass10_Arr[w];
 sf::RectangleShape grass11_Arr[w];
 sf::CircleShape life_Arr[li];
-
-
+sf::RectangleShape enemy[e];
+sf::RectangleShape enemyRT[e];
+sf::CircleShape enemyL[e];
 
 int main()
 {
@@ -87,13 +89,13 @@ int main()
     sf::Sound break_sound;
     break_sound.setBuffer(glass_breaksound);
 
-    
+
 
     sf::Music down_sound;
     if (!down_sound.openFromFile("down_whoosh_sound.wav"))
         std::cout << "sound down_whoosh_sound" << std::endl;
-    
-    
+
+
 
 
     sf::Music crick;
@@ -108,7 +110,7 @@ int main()
     music.setLoop(true);
     music.play();
 
-    
+
 
     sf::Texture ballT;
     if (!ballT.loadFromFile("ball.png"))
@@ -119,7 +121,7 @@ int main()
 
     for (int i = 0; i < li; i++)
     {
-        
+
         life_Arr[i].setRadius(20);
         life_Arr[i].setFillColor(sf::Color(255, 255, 255));
         life_Arr[i].setPosition(45 * i + 20, 10);
@@ -178,7 +180,7 @@ int main()
     enemyTR8.setTexture(&enemyT);
     sf::RectangleShape enemyTR9(sf::Vector2f(30, 135));
     enemyTR9.setTexture(&enemyT);
-    
+
 
     sf::RectangleShape Gback1(sf::Vector2f(1080, 720));
     sf::Texture Gback;
@@ -189,7 +191,7 @@ int main()
     Gback.setRepeated(true);
     Gback1.setFillColor(sf::Color(255, 255, 255, 100));
 
-   
+
     sf::RectangleShape back4(sf::Vector2f(1080, 720));
     sf::Texture texture4;
     if (!texture4.loadFromFile("4.png"))
@@ -332,7 +334,7 @@ int main()
 
     sf::CircleShape ball(rect_W / 2);
     ball.setPosition(rect_W * 2, rect_H);
-    
+
     ball.setTexture(&ballT);
     ball.setFillColor(sf::Color(250, 255, 255));
     ball.setOrigin(45, 45);
@@ -398,16 +400,23 @@ int main()
     std::fstream WallReadArray;
     WallReadArray.open("Wall_Arr.txt", std::ios::in);
     if (!WallReadArray) {
-        std::cout << "File doesn�t exist.";
+        std::cout << "File doesn’t exist.";
     }
     std::fstream MoveReadArray;
     MoveReadArray.open("Move_Arr.txt", std::ios::in);
     if (!WallReadArray) {
-        std::cout << "File doesn�t exist.";
+        std::cout << "File doesn’t exist.";
+    }
+    std::fstream EnemyReadArray;
+    EnemyReadArray.open("Enemy_Arr.txt", std::ios::in);
+    if (!EnemyReadArray) {
+        std::cout << "File doesn’t exist.";
     }
 
 
+
     int x1;
+    int x2;
     /*
     while (1) {
         WallReadArray >> x1;
@@ -535,10 +544,31 @@ int main()
         }
     }
 
+    for (int i = 0; i < e; i++)
+    {
+        if (EnemyReadArray.eof())
+            break;
+        EnemyReadArray >> x1;
+        EnemyReadArray >> x2;
+        //std::cout << x1 << " ; " << x2 << std::endl;
+        enemy[i].setPosition(Move_Arr[x1][x2].getPosition().x, Move_Arr[x1][x2].getPosition().y);
+        enemy[i].setSize(sf::Vector2f(rect_W / 3, rect_H));
+        enemy[i].setOrigin(enemy[i].getSize().x / 2, enemy[i].getSize().y / 2);
+
+        enemyRT[i].setSize(sf::Vector2f(30, 135));
+        enemyRT[i].setPosition(enemy1.getPosition().x - 15, enemy1.getPosition().y - 90);
+        enemyRT[i].setTexture(&enemyT);
+
+        enemyL[i].setRadius(rect_W * 2);
+        enemyL[i].setPosition(enemy9.getPosition().x - 180, enemy9.getPosition().y - 245);
+        enemyL[i].setTexture(&balll);
+        enemyL[i].setFillColor(sf::Color(170, 200, 100, 70));
+    }
+
 
     WallReadArray.close();
     MoveReadArray.close();
-
+    EnemyReadArray.close();
 
 
     while (Window.isOpen())
@@ -560,16 +590,22 @@ int main()
         else
             down_sound.stop();
 
-       
-       
+
+        //X Friction
 
         ballSpeed.x = ballSpeed.x * 0.25;
+
+        //Gravity
+
         if (ballSpeed.y < 50 && ground != true)
         {
             ballSpeed.y += rect_W * 0.015;
 
 
         }
+
+        //Max Speed
+
         if (ballSpeed.y > 50 || ballSpeed.y < -50) {
 
             ballSpeed.y = 50;
@@ -584,29 +620,50 @@ int main()
 
         if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && it - temp_it > 10)
         {
-            B_i = (102 - ((Wall_Arr[102][0].getPosition().x - ball.getPosition().x)) / rect_W);
-            B_j = ball.getPosition().y / rect_H;
+            int i = (102 - ((Wall_Arr[102][0].getPosition().x - event.mouseButton.x)) / rect_W);
+            int j = event.mouseButton.y / rect_H;
             std::cout << B_i << " ; " << B_j << std::endl;
+            if (i > 114 || i < 0)
+                continue;
+            if (j > 22 || j < 0)
+                continue;
+            //std::cout << std::endl << i << " ; " << j;
+            //array[i][j].setfillcolor(color(255, 0, 0));
+
+            if (Wall_Arr[i][j].getPosition().x > -200 && Wall_Arr[i][j].getPosition().y > 0)
+            {
+                Move_Arr[i][j].setPosition(Wall_Arr[i][j].getPosition().x, Wall_Arr[i][j].getPosition().y);
+                Wall_Arr[i][j].setPosition(-200, 0);
+            }
+
+            else if (Move_Arr[i][j].getPosition().x > -200 && Move_Arr[i][j].getPosition().y > 0)
+            {
+                Wall_Arr[i][j].setPosition(Move_Arr[i][j].getPosition().x, Move_Arr[i][j].getPosition().y);
+                Move_Arr[i][j].setPosition(-200, 0);
+
+            }
+
+            temp_it = it;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
         {
-            
+
             ballSpeed.x = -rect_W * 0.20; //0.25
             r = it;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
         {
-            
+
             ballSpeed.x = rect_W * 0.20; //0.25
             l = it;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up) && col != false)
         {
 
-            
+
             if (ball.getPosition().y > 20)
             {
-               
+
                 ground = false;
                 ballSpeed.y = -(rect_W / 2.8);
                 col = false;
@@ -620,7 +677,7 @@ int main()
             q = it;
         }
 
-
+        //Top Window Checker
 
         if (ball.getPosition().y <= 0)
         {
@@ -635,6 +692,8 @@ int main()
 
 
         }
+
+        //Bottom window checker
 
         if (ball.getPosition().y >= Height - (ball.getRadius() * 2))
         {
@@ -669,7 +728,7 @@ int main()
 
         B_i = (102 - ((Wall_Arr[102][0].getPosition().x - ball.getPosition().x)) / rect_W);
         B_j = ball.getPosition().y / rect_H;
-        std::cout << std::endl << "  Test Location 1 : " << B_i << "  ;  " << B_j;
+        //std::cout << std::endl << "  Test Location 1 : " << B_i << "  ;  " << B_j;
 
 
         //TOP CHECKER
@@ -680,7 +739,7 @@ int main()
             if (ball.getPosition().y < Move_Arr[B_i][B_j].getPosition().y)
             {
                 if (it - T_SI > 10)
-                   
+
                     glass_sound.play();
                 //std::cout << " ; top collision : " << B_i << " ; " << B_j;
                 ball.setPosition(ball.getPosition().x, Move_Arr[B_i][B_j].getPosition().y);
@@ -809,7 +868,7 @@ int main()
 
                 if (ball.getPosition().x > Move_Arr[B_i][B_j].getPosition().x && ballSpeed.y > 0)
                 {
-                    
+
                     col = true;
                     //std::cout << " ; bottom collision right : " << B_i + 1 << " ; " << B_j + 1 << " ; ";
                     ball.setPosition(ball.getPosition().x, Move_Arr[B_i][B_j].getPosition().y);
@@ -987,7 +1046,7 @@ int main()
 
                 if (ball.getPosition().x > Move_Arr[B_i][B_j].getPosition().x && ballSpeed.y > 0)
                 {
-                    
+
                     col = true;
                     //std::cout << " ; bottom collision right : " << B_i + 1 << " ; " << B_j + 1 << " ; ";
                     ball.setPosition(ball.getPosition().x, Move_Arr[B_i][B_j].getPosition().y);
@@ -1070,81 +1129,81 @@ int main()
 
 
         //Enemy Checker
-        int temp_Rotation = ball.getRotation();
-        ball.setRotation(0);
-        if (ball.getGlobalBounds().intersects(enemy1.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy2.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy3.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy4.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy5.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy6.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy7.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy8.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy9.getGlobalBounds()))
-        {
-            break_sound.play();
-            life--;
-            life_Arr[life].setPosition(-100,-100);
-            if (life == 0)
-                break;
+        //int temp_Rotation = ball.getRotation();
+        //ball.setRotation(0);
+        //if (ball.getGlobalBounds().intersects(enemy1.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy2.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy3.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy4.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy5.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy6.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy7.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy8.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy9.getGlobalBounds()))
+        //{
+        //    break_sound.play();
+        //    life--;
+        //    life_Arr[life].setPosition(-100,-100);
+        //    if (life == 0)
+        //        break;
 
-            col = false;
-            std::fstream WallReadArray2;
-            WallReadArray2.open("Wall_Arr.txt", std::ios::in);
-            if (!WallReadArray2) {
-                std::cout << "File doesn�t exist.";
-            }
-            std::fstream MoveReadArray2;
-            MoveReadArray2.open("Move_Arr.txt", std::ios::in);
-            if (!WallReadArray2) {
-                std::cout << "File doesn�t exist.";
-            }
-
-
-            for (int i = 0; i < w; i++)
-            {
-                for (int j = 0; j < h; j++)
-                {
-                    WallReadArray2 >> x1;
-                    //std::cout << " Wall["<< i << " ][" << j << "] =  X : " << x1;
-                    if (WallReadArray2.eof())
-                        break;
-                    Wall_Arr[i][j].setPosition(x1, Wall_Arr[i][j].getPosition().y);
-                    WallReadArray2 >> x1;
-                    //std::cout << " :  Y : " << x1 << std::endl;
-                    if (WallReadArray2.eof())
-                        break;
-                    Wall_Arr[i][j].setPosition(Wall_Arr[i][j].getPosition().x, x1);
-
-                    if (Wall_Arr[i][j].getPosition().x == -200)
-                    {
-                        Wall_Arr[i][j].setPosition(Wall_Arr[i][j].getPosition().x - Wall_Arr[i][j].getPosition().x - 10000, 0);
-                    }
-                    else
-                        Wall_Arr[i][j].setPosition(Wall_Arr[i][j].getPosition().x + (74 * i) + rect_W / 2, Wall_Arr[i][j].getPosition().y + (74 * j) + rect_W / 2);
-
-                    MoveReadArray2 >> x1;
-                    //std::cout << " Move["<< i << " ][" << j << "] =  X : " << x1;
-                    if (MoveReadArray2.eof())
-                        break;
-                    Move_Arr[i][j].setPosition(x1, Move_Arr[i][j].getPosition().y);
-                    MoveReadArray2 >> x1;
-                    //std::cout << " :  Y : " << x1 << std::endl;
-                    if (MoveReadArray2.eof())
-                        break;
-                    Move_Arr[i][j].setPosition(Move_Arr[i][j].getPosition().x, x1);
-
-                    if (Move_Arr[i][j].getPosition().x == -200 || Move_Arr[i][j].getPosition().y > 112)
-                    {
-                        Move_Arr[i][j].setPosition(Move_Arr[i][j].getPosition().x - Move_Arr[i][j].getPosition().x - 10000, 0);
-                    }
-                    else
-                        Move_Arr[i][j].setPosition(Move_Arr[i][j].getPosition().x + (74 * i) + rect_W / 2, Move_Arr[i][j].getPosition().y + rect_W / 2 + (74 * j));
+        //    col = false;
+        //    std::fstream WallReadArray2;
+        //    WallReadArray2.open("Wall_Arr.txt", std::ios::in);
+        //    if (!WallReadArray2) {
+        //        std::cout << "File doesn’t exist.";
+        //    }
+        //    std::fstream MoveReadArray2;
+        //    MoveReadArray2.open("Move_Arr.txt", std::ios::in);
+        //    if (!WallReadArray2) {
+        //        std::cout << "File doesn’t exist.";
+        //    }
 
 
+        //    for (int i = 0; i < w; i++)
+        //    {
+        //        for (int j = 0; j < h; j++)
+        //        {
+        //            WallReadArray2 >> x1;
+        //            //std::cout << " Wall["<< i << " ][" << j << "] =  X : " << x1;
+        //            if (WallReadArray2.eof())
+        //                break;
+        //            Wall_Arr[i][j].setPosition(x1, Wall_Arr[i][j].getPosition().y);
+        //            WallReadArray2 >> x1;
+        //            //std::cout << " :  Y : " << x1 << std::endl;
+        //            if (WallReadArray2.eof())
+        //                break;
+        //            Wall_Arr[i][j].setPosition(Wall_Arr[i][j].getPosition().x, x1);
 
-                }
-            }
+        //            if (Wall_Arr[i][j].getPosition().x == -200)
+        //            {
+        //                Wall_Arr[i][j].setPosition(Wall_Arr[i][j].getPosition().x - Wall_Arr[i][j].getPosition().x - 10000, 0);
+        //            }
+        //            else
+        //                Wall_Arr[i][j].setPosition(Wall_Arr[i][j].getPosition().x + (74 * i) + rect_W / 2, Wall_Arr[i][j].getPosition().y + (74 * j) + rect_W / 2);
 
-            ball.setPosition(ball.getPosition().x, 92);
-            ballSpeed.x = 0;
-            ballSpeed.y = 0;
-            WallReadArray2.close();
-            MoveReadArray2.close();
-        }
-        ball.setRotation(temp_Rotation);
+        //            MoveReadArray2 >> x1;
+        //            //std::cout << " Move["<< i << " ][" << j << "] =  X : " << x1;
+        //            if (MoveReadArray2.eof())
+        //                break;
+        //            Move_Arr[i][j].setPosition(x1, Move_Arr[i][j].getPosition().y);
+        //            MoveReadArray2 >> x1;
+        //            //std::cout << " :  Y : " << x1 << std::endl;
+        //            if (MoveReadArray2.eof())
+        //                break;
+        //            Move_Arr[i][j].setPosition(Move_Arr[i][j].getPosition().x, x1);
+
+        //            if (Move_Arr[i][j].getPosition().x == -200 || Move_Arr[i][j].getPosition().y > 112)
+        //            {
+        //                Move_Arr[i][j].setPosition(Move_Arr[i][j].getPosition().x - Move_Arr[i][j].getPosition().x - 10000, 0);
+        //            }
+        //            else
+        //                Move_Arr[i][j].setPosition(Move_Arr[i][j].getPosition().x + (74 * i) + rect_W / 2, Move_Arr[i][j].getPosition().y + rect_W / 2 + (74 * j));
+
+
+
+        //        }
+        //    }
+
+        //    ball.setPosition(ball.getPosition().x, 92);
+        //    ballSpeed.x = 0;
+        //    ballSpeed.y = 0;
+        //    WallReadArray2.close();
+        //    MoveReadArray2.close();
+        //}
+        //ball.setRotation(temp_Rotation);
 
 
         if (top != 0)
@@ -1183,19 +1242,19 @@ int main()
         it++;
 
 
-        enemy1.setPosition(Move_Arr[16][6].getPosition().x, Move_Arr[16][6].getPosition().y);
-        enemy2.setPosition(Move_Arr[29][6].getPosition().x, Move_Arr[35][6].getPosition().y);
-        enemy3.setPosition(Move_Arr[35][6].getPosition().x, Move_Arr[29][6].getPosition().y);
-        enemy4.setPosition(Move_Arr[50][6].getPosition().x, Move_Arr[50][6].getPosition().y);
-        enemy5.setPosition(Move_Arr[52][6].getPosition().x, Move_Arr[52][6].getPosition().y);
-        enemy6.setPosition(Move_Arr[55][6].getPosition().x, Move_Arr[55][6].getPosition().y);
-        enemy7.setPosition(Move_Arr[58][6].getPosition().x, Move_Arr[58][6].getPosition().y);
-        enemy8.setPosition(Move_Arr[85][5].getPosition().x, Move_Arr[85][5].getPosition().y);
-        enemy9.setPosition(Move_Arr[96][5].getPosition().x, Move_Arr[96][5].getPosition().y);
+        //enemy1.setPosition(Move_Arr[16][6].getPosition().x, Move_Arr[16][6].getPosition().y);
+        //enemy2.setPosition(Move_Arr[29][6].getPosition().x, Move_Arr[35][6].getPosition().y);
+        //enemy3.setPosition(Move_Arr[35][6].getPosition().x, Move_Arr[29][6].getPosition().y);
+        //enemy4.setPosition(Move_Arr[50][6].getPosition().x, Move_Arr[50][6].getPosition().y);
+        //enemy5.setPosition(Move_Arr[52][6].getPosition().x, Move_Arr[52][6].getPosition().y);
+        //enemy6.setPosition(Move_Arr[55][6].getPosition().x, Move_Arr[55][6].getPosition().y);
+        //enemy7.setPosition(Move_Arr[58][6].getPosition().x, Move_Arr[58][6].getPosition().y);
+        //enemy8.setPosition(Move_Arr[85][5].getPosition().x, Move_Arr[85][5].getPosition().y);
+        //enemy9.setPosition(Move_Arr[96][5].getPosition().x, Move_Arr[96][5].getPosition().y);
 
-        
-            
-       
+
+
+
         Window.clear();// sf::Color(0, 0, 0, 255));
 
         /* Window.draw(back1);
@@ -1206,12 +1265,12 @@ int main()
 
         Window.draw(Gback1);
 
-        Window.draw(ball);
+       
 
 
 
 
-        Window.draw(enemy1);
+        /*Window.draw(enemy1);
         Window.draw(enemy2);
         Window.draw(enemy3);
         Window.draw(enemy4);
@@ -1219,9 +1278,9 @@ int main()
         Window.draw(enemy6);
         Window.draw(enemy7);
         Window.draw(enemy8);
-        Window.draw(enemy9);
+        Window.draw(enemy9);*/
 
-        enemyTR1.setPosition(enemy1.getPosition().x - 15, enemy1.getPosition().y - 90);
+        /*enemyTR1.setPosition(enemy1.getPosition().x - 15, enemy1.getPosition().y - 90);
         Window.draw(enemyTR1);
         enemyTR2.setPosition(enemy2.getPosition().x - 15, enemy2.getPosition().y - 90);
         Window.draw(enemyTR2);
@@ -1257,173 +1316,276 @@ int main()
         enemy8L.setPosition(enemy8.getPosition().x - 180, enemy8.getPosition().y - 245);
         Window.draw(enemy8L);
         enemy9L.setPosition(enemy9.getPosition().x - 180, enemy9.getPosition().y - 245);
-        Window.draw(enemy9L);
+        Window.draw(enemy9L);*/
+
+        std::fstream EnemyReadArray2;
+        EnemyReadArray2.open("Enemy_Arr.txt", std::ios::in);
+        if (!EnemyReadArray2) {
+            std::cout << "File doesn’t exist.";
+        }
         //SET AND DRAW TEXTURES
 
-       // ring1.setPosition(Wall_Arr[8][7].getPosition().x, Wall_Arr[8][7].getPosition().y - 190);
-        ringR1.setPosition(Wall_Arr[8][7].getPosition().x - 90, Wall_Arr[8][7].getPosition().y - 210);
-        ringR2.setPosition(Wall_Arr[31][4].getPosition().x, Wall_Arr[31][4].getPosition().y - 230);
-        ringR3.setPosition(Wall_Arr[72][7].getPosition().x - 45, Wall_Arr[72][7].getPosition().y - 230);
-        ringR4.setPosition(Wall_Arr[88][7].getPosition().x + 45, Wall_Arr[88][7].getPosition().y - 230);
-        ringR5.setPosition(Wall_Arr[92][7].getPosition().x - 135, Wall_Arr[92][7].getPosition().y - 230);
+        for (int i = 0; i < e; i++)
+        {
 
-        Window.draw(ringR1);
-        Window.draw(ringR2);
-        Window.draw(ringR3);
-        Window.draw(ringR4);
-        Window.draw(ringR5);
+            int x3, x4;
+            EnemyReadArray2 >> x3;
+            EnemyReadArray2 >> x4;
+            //std::cout << x3 << " ; " << x4 << std::endl;
+            enemy[i].setPosition(Move_Arr[x3][x4].getPosition().x, Move_Arr[x3][x4].getPosition().y);
+            Window.draw(enemy[i]);
+            enemyRT[i].setPosition(enemy[i].getPosition().x - 15, enemy[i].getPosition().y - 90);
+            Window.draw(enemyRT[i]);
+            enemyL[i].setPosition(enemy[i].getPosition().x - 180, enemy[i].getPosition().y - 245);
+            Window.draw(enemyL[i]);
 
-        for (int i = 0; i < w; i++)
-            for (int j = 0; j < h; j++)
-            {
+                int temp_Rotation = ball.getRotation();
+                ball.setRotation(0);
+                if (ball.getGlobalBounds().intersects(enemy[i].getGlobalBounds()))// || ball.getGlobalBounds().intersects(enemy2.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy3.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy4.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy5.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy6.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy7.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy8.getGlobalBounds()) || ball.getGlobalBounds().intersects(enemy9.getGlobalBounds()))
+                {
+                    break_sound.play();
+                    life--;
+                    life_Arr[life].setPosition(-100, -100);
+                    
 
-                if (Wall_Arr[i][j].getPosition().x > -rect_W && Wall_Arr[i][j].getPosition().x < Width + rect_W)
+                    col = false;
+                    std::fstream WallReadArray2;
+                    WallReadArray2.open("Wall_Arr.txt", std::ios::in);
+                    if (!WallReadArray2) {
+                        std::cout << "File doesn’t exist.";
+                    }
+                    std::fstream MoveReadArray2;
+                    MoveReadArray2.open("Move_Arr.txt", std::ios::in);
+                    if (!WallReadArray2) {
+                        std::cout << "File doesn’t exist.";
+                    }
+
+
+                    for (int i = 0; i < w; i++)
+                    {
+                        for (int j = 0; j < h; j++)
+                        {
+                            WallReadArray2 >> x1;
+                            //std::cout << " Wall["<< i << " ][" << j << "] =  X : " << x1;
+                            if (WallReadArray2.eof())
+                                break;
+                            Wall_Arr[i][j].setPosition(x1, Wall_Arr[i][j].getPosition().y);
+                            WallReadArray2 >> x1;
+                            //std::cout << " :  Y : " << x1 << std::endl;
+                            if (WallReadArray2.eof())
+                                break;
+                            Wall_Arr[i][j].setPosition(Wall_Arr[i][j].getPosition().x, x1);
+
+                            if (Wall_Arr[i][j].getPosition().x == -200)
+                            {
+                                Wall_Arr[i][j].setPosition(Wall_Arr[i][j].getPosition().x - Wall_Arr[i][j].getPosition().x - 10000, 0);
+                            }
+                            else
+                                Wall_Arr[i][j].setPosition(Wall_Arr[i][j].getPosition().x + (74 * i) + rect_W / 2, Wall_Arr[i][j].getPosition().y + (74 * j) + rect_W / 2);
+
+                            MoveReadArray2 >> x1;
+                            //std::cout << " Move["<< i << " ][" << j << "] =  X : " << x1;
+                            if (MoveReadArray2.eof())
+                                break;
+                            Move_Arr[i][j].setPosition(x1, Move_Arr[i][j].getPosition().y);
+                            MoveReadArray2 >> x1;
+                            //std::cout << " :  Y : " << x1 << std::endl;
+                            if (MoveReadArray2.eof())
+                                break;
+                            Move_Arr[i][j].setPosition(Move_Arr[i][j].getPosition().x, x1);
+
+                            if (Move_Arr[i][j].getPosition().x == -200 || Move_Arr[i][j].getPosition().y > 112)
+                            {
+                                Move_Arr[i][j].setPosition(Move_Arr[i][j].getPosition().x - Move_Arr[i][j].getPosition().x - 10000, 0);
+                            }
+                            else
+                                Move_Arr[i][j].setPosition(Move_Arr[i][j].getPosition().x + (74 * i) + rect_W / 2, Move_Arr[i][j].getPosition().y + rect_W / 2 + (74 * j));
+
+
+
+                        }
+                    }
+
+                    ball.setPosition(ball.getPosition().x, 92);
+                    ballSpeed.x = 0;
+                    ballSpeed.y = 0;
+                    WallReadArray2.close();
+                    MoveReadArray2.close();
+                }
+                ball.setRotation(temp_Rotation);
+
+            
+        }
+        if (life == 0)
+            break;
+            EnemyReadArray2.close();
+
+            Window.draw(ball);
+
+            // ring1.setPosition(Wall_Arr[8][7].getPosition().x, Wall_Arr[8][7].getPosition().y - 190);
+            ringR1.setPosition(Wall_Arr[8][7].getPosition().x - 90, Wall_Arr[8][7].getPosition().y - 210);
+            ringR2.setPosition(Wall_Arr[31][4].getPosition().x, Wall_Arr[31][4].getPosition().y - 230);
+            ringR3.setPosition(Wall_Arr[72][7].getPosition().x - 45, Wall_Arr[72][7].getPosition().y - 230);
+            ringR4.setPosition(Wall_Arr[88][7].getPosition().x + 45, Wall_Arr[88][7].getPosition().y - 230);
+            ringR5.setPosition(Wall_Arr[92][7].getPosition().x - 135, Wall_Arr[92][7].getPosition().y - 230);
+
+            Window.draw(ringR1);
+            Window.draw(ringR2);
+            Window.draw(ringR3);
+            Window.draw(ringR4);
+            Window.draw(ringR5);
+
+            for (int i = 0; i < w; i++)
+                for (int j = 0; j < h; j++)
                 {
 
-
-                    if (Wall_Arr[i][j].getPosition().x > -5000)
-                    {
-                        grass7_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 45, Wall_Arr[i][j].getPosition().y - 45);
-                        Window.draw(grass7_Arr[i]);
-                    }
-                    //if(j!=0 && Move_Arr[i][j-1].getGlobalBounds().intersects(enemy1.getGlobalBounds()) != true && Move_Arr[i][j - 1].getGlobalBounds().intersects(enemy2.getGlobalBounds()) != true && Move_Arr[i][j - 1].getGlobalBounds().intersects(enemy3.getGlobalBounds()) != true && Move_Arr[i][j - 1].getGlobalBounds().intersects(enemy4.getGlobalBounds()) != true && Move_Arr[i][j - 1].getGlobalBounds().intersects(enemy5.getGlobalBounds()) != true && Move_Arr[i][j - 1].getGlobalBounds().intersects(enemy6.getGlobalBounds()) != true && Move_Arr[i][j - 1].getGlobalBounds().intersects(enemy7.getGlobalBounds()) != true && Move_Arr[i][j - 1].getGlobalBounds().intersects(enemy8.getGlobalBounds()) != true)
-                    //{ 
-                    if (j == 7)
+                    if (Wall_Arr[i][j].getPosition().x > -rect_W && Wall_Arr[i][j].getPosition().x < Width + rect_W)
                     {
 
-                        grass1_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 45, Wall_Arr[i][j].getPosition().y - 135);
-                        Window.draw(grass1_Arr[i]);
 
-                    }
-                    if (j == 0 && Wall_Arr[i][j + 1].getPosition().x <= -5000)
-                    {
-                        grass2_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 45, Wall_Arr[i][j].getPosition().y - 45);
-                        Window.draw(grass2_Arr[i]);
-                    }
-
-                    if (i != 0 && j != 7 && j != 0)
-                    {
-
-                        if (Wall_Arr[i][j].getPosition().x > -5000 && Wall_Arr[i - 1][j].getPosition().x <= -5000 && Wall_Arr[i][j + 1].getPosition().x > -5000)
+                        if (Wall_Arr[i][j].getPosition().x > -5000)
                         {
-                            grass3_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 135, Wall_Arr[i][j].getPosition().y - 45);
-                           
-                                Window.draw(grass3_Arr[i]);
+                            grass7_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 45, Wall_Arr[i][j].getPosition().y - 45);
+                            Window.draw(grass7_Arr[i]);
                         }
-
-                        if (Wall_Arr[i][j].getPosition().x > -5000 && Wall_Arr[i + 1][j].getPosition().x <= -5000 && Wall_Arr[i][j + 1].getPosition().x > -5000)
-                        {
-                            grass4_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 45, Wall_Arr[i][j].getPosition().y - 45);
-                           
-                                Window.draw(grass4_Arr[i]);
-                        }
-
-                        if (Wall_Arr[i][j].getPosition().x > -5000 && Wall_Arr[i - 1][j].getPosition().x <= -5000 && Wall_Arr[i][j + 1].getPosition().x > -5000 && Wall_Arr[i][j - 1].getPosition().x <= -5000)
-                        {
-
-                            grass5_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 135, Wall_Arr[i][j].getPosition().y - 135);
-                           
-                                Window.draw(grass5_Arr[i]);
-                        }
-
-                        if (Wall_Arr[i][j].getPosition().x > -5000 && Wall_Arr[i + 1][j].getPosition().x <= -5000 && Wall_Arr[i][j + 1].getPosition().x > -5000 && Wall_Arr[i][j - 1].getPosition().x <= -5000)
-                        {
-
-                            grass6_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 45, Wall_Arr[i][j].getPosition().y - 135);
-                           // if (grass6_Arr[i].getGlobalBounds().intersects(enemy8.getGlobalBounds()) != true && grass6_Arr[i].getGlobalBounds().intersects(enemy9.getGlobalBounds()) != true)
-                                Window.draw(grass6_Arr[i]);
-                        }
-
-                        if (Wall_Arr[i][j].getPosition().x > -5000 && Wall_Arr[i - 1][j].getPosition().x <= -5000 && Wall_Arr[i][j - 1].getPosition().x > -5000 && Wall_Arr[i][j + 1].getPosition().x <= -5000)
-                        {
-
-                            grass8_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 130, Wall_Arr[i][j].getPosition().y - 60);
-                            Window.draw(grass8_Arr[i]);
-                        }
-
-                        if (Wall_Arr[i][j].getPosition().x > -5000 && Wall_Arr[i + 1][j].getPosition().x <= -5000 && Wall_Arr[i][j - 1].getPosition().x > -5000 && Wall_Arr[i][j + 1].getPosition().x <= -5000)
-                        {
-                            grass9_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 45, Wall_Arr[i][j].getPosition().y - 60);
-                            Window.draw(grass9_Arr[i]);
-                        }
-
-                        if (Wall_Arr[i][j].getPosition().x > -5000 && Wall_Arr[i + 1][j].getPosition().x <= -5000 && Wall_Arr[i - 1][j].getPosition().x > -5000 && Wall_Arr[i][j + 1].getPosition().x <= -5000 && Wall_Arr[i][j - 1].getPosition().x <= -5000)
-                        {
-                            grass10_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 45, Wall_Arr[i][j].getPosition().y - 145);
-                            Window.draw(grass10_Arr[i]);
-                        }
-
-                        if (Wall_Arr[i][j].getPosition().x > -5000 && Wall_Arr[i + 1][j].getPosition().x > -5000 && Wall_Arr[i - 1][j].getPosition().x <= -5000 && Wall_Arr[i][j + 1].getPosition().x <= -5000 && Wall_Arr[i][j - 1].getPosition().x <= -5000)
-                        {
-                            grass11_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 135, Wall_Arr[i][j].getPosition().y - 145);
-                            Window.draw(grass11_Arr[i]);
-                        }
-
-                        if (Wall_Arr[i][j].getPosition().x > -5000 && Wall_Arr[i - 1][j].getPosition().x > -5000 && Wall_Arr[i + 1][j].getPosition().x > -5000 && Wall_Arr[i][j - 1].getPosition().x <= -5000)
+                        //if(j!=0 && Move_Arr[i][j-1].getGlobalBounds().intersects(enemy1.getGlobalBounds()) != true && Move_Arr[i][j - 1].getGlobalBounds().intersects(enemy2.getGlobalBounds()) != true && Move_Arr[i][j - 1].getGlobalBounds().intersects(enemy3.getGlobalBounds()) != true && Move_Arr[i][j - 1].getGlobalBounds().intersects(enemy4.getGlobalBounds()) != true && Move_Arr[i][j - 1].getGlobalBounds().intersects(enemy5.getGlobalBounds()) != true && Move_Arr[i][j - 1].getGlobalBounds().intersects(enemy6.getGlobalBounds()) != true && Move_Arr[i][j - 1].getGlobalBounds().intersects(enemy7.getGlobalBounds()) != true && Move_Arr[i][j - 1].getGlobalBounds().intersects(enemy8.getGlobalBounds()) != true)
+                        //{ 
+                        if (j == 7)
                         {
 
                             grass1_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 45, Wall_Arr[i][j].getPosition().y - 135);
                             Window.draw(grass1_Arr[i]);
 
                         }
-
-                        if (Wall_Arr[i][j].getPosition().x > -5000 && Wall_Arr[i - 1][j].getPosition().x > -5000 && Wall_Arr[i + 1][j].getPosition().x > -5000 && Wall_Arr[i][j + 1].getPosition().x <= -5000)
+                        if (j == 0 && Wall_Arr[i][j + 1].getPosition().x <= -5000)
                         {
                             grass2_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 45, Wall_Arr[i][j].getPosition().y - 45);
                             Window.draw(grass2_Arr[i]);
                         }
 
+                        if (i != 0 && j != 7 && j != 0)
+                        {
+
+                            if (Wall_Arr[i][j].getPosition().x > -5000 && Wall_Arr[i - 1][j].getPosition().x <= -5000 && Wall_Arr[i][j + 1].getPosition().x > -5000)
+                            {
+                                grass3_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 135, Wall_Arr[i][j].getPosition().y - 45);
+
+                                Window.draw(grass3_Arr[i]);
+                            }
+
+                            if (Wall_Arr[i][j].getPosition().x > -5000 && Wall_Arr[i + 1][j].getPosition().x <= -5000 && Wall_Arr[i][j + 1].getPosition().x > -5000)
+                            {
+                                grass4_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 45, Wall_Arr[i][j].getPosition().y - 45);
+
+                                Window.draw(grass4_Arr[i]);
+                            }
+
+                            if (Wall_Arr[i][j].getPosition().x > -5000 && Wall_Arr[i - 1][j].getPosition().x <= -5000 && Wall_Arr[i][j + 1].getPosition().x > -5000 && Wall_Arr[i][j - 1].getPosition().x <= -5000)
+                            {
+
+                                grass5_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 135, Wall_Arr[i][j].getPosition().y - 135);
+
+                                Window.draw(grass5_Arr[i]);
+                            }
+
+                            if (Wall_Arr[i][j].getPosition().x > -5000 && Wall_Arr[i + 1][j].getPosition().x <= -5000 && Wall_Arr[i][j + 1].getPosition().x > -5000 && Wall_Arr[i][j - 1].getPosition().x <= -5000)
+                            {
+
+                                grass6_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 45, Wall_Arr[i][j].getPosition().y - 135);
+                                // if (grass6_Arr[i].getGlobalBounds().intersects(enemy8.getGlobalBounds()) != true && grass6_Arr[i].getGlobalBounds().intersects(enemy9.getGlobalBounds()) != true)
+                                Window.draw(grass6_Arr[i]);
+                            }
+
+                            if (Wall_Arr[i][j].getPosition().x > -5000 && Wall_Arr[i - 1][j].getPosition().x <= -5000 && Wall_Arr[i][j - 1].getPosition().x > -5000 && Wall_Arr[i][j + 1].getPosition().x <= -5000)
+                            {
+
+                                grass8_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 130, Wall_Arr[i][j].getPosition().y - 60);
+                                Window.draw(grass8_Arr[i]);
+                            }
+
+                            if (Wall_Arr[i][j].getPosition().x > -5000 && Wall_Arr[i + 1][j].getPosition().x <= -5000 && Wall_Arr[i][j - 1].getPosition().x > -5000 && Wall_Arr[i][j + 1].getPosition().x <= -5000)
+                            {
+                                grass9_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 45, Wall_Arr[i][j].getPosition().y - 60);
+                                Window.draw(grass9_Arr[i]);
+                            }
+
+                            if (Wall_Arr[i][j].getPosition().x > -5000 && Wall_Arr[i + 1][j].getPosition().x <= -5000 && Wall_Arr[i - 1][j].getPosition().x > -5000 && Wall_Arr[i][j + 1].getPosition().x <= -5000 && Wall_Arr[i][j - 1].getPosition().x <= -5000)
+                            {
+                                grass10_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 45, Wall_Arr[i][j].getPosition().y - 145);
+                                Window.draw(grass10_Arr[i]);
+                            }
+
+                            if (Wall_Arr[i][j].getPosition().x > -5000 && Wall_Arr[i + 1][j].getPosition().x > -5000 && Wall_Arr[i - 1][j].getPosition().x <= -5000 && Wall_Arr[i][j + 1].getPosition().x <= -5000 && Wall_Arr[i][j - 1].getPosition().x <= -5000)
+                            {
+                                grass11_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 135, Wall_Arr[i][j].getPosition().y - 145);
+                                Window.draw(grass11_Arr[i]);
+                            }
+
+                            if (Wall_Arr[i][j].getPosition().x > -5000 && Wall_Arr[i - 1][j].getPosition().x > -5000 && Wall_Arr[i + 1][j].getPosition().x > -5000 && Wall_Arr[i][j - 1].getPosition().x <= -5000)
+                            {
+
+                                grass1_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 45, Wall_Arr[i][j].getPosition().y - 135);
+                                Window.draw(grass1_Arr[i]);
+
+                            }
+
+                            if (Wall_Arr[i][j].getPosition().x > -5000 && Wall_Arr[i - 1][j].getPosition().x > -5000 && Wall_Arr[i + 1][j].getPosition().x > -5000 && Wall_Arr[i][j + 1].getPosition().x <= -5000)
+                            {
+                                grass2_Arr[i].setPosition(Wall_Arr[i][j].getPosition().x - 45, Wall_Arr[i][j].getPosition().y - 45);
+                                Window.draw(grass2_Arr[i]);
+                            }
+
+                        }
+                        //}
+
                     }
-                    //}
+                    /* if (Move_Arr[i][j].getPosition().x > -rect_W && Move_Arr[i][j].getPosition().x < Width + rect_W)
+                        Window.draw(Move_Arr[i][j]);*/
+
+                        /*if (Wall_Arr[i][j].getPosition().x > -rect_W && Wall_Arr[i][j].getPosition().x < Width + rect_W)
+                        Window.draw(Wall_Arr[i][j]);*/
+
+
+
 
                 }
-                /* if (Move_Arr[i][j].getPosition().x > -rect_W && Move_Arr[i][j].getPosition().x < Width + rect_W)
-                    Window.draw(Move_Arr[i][j]);*/
-
-                    /*if (Wall_Arr[i][j].getPosition().x > -rect_W && Wall_Arr[i][j].getPosition().x < Width + rect_W)
-                    Window.draw(Wall_Arr[i][j]);*/
 
 
+            ballL.setPosition(ball.getPosition().x - 180, ball.getPosition().y - 180);
+            Window.draw(ballL);
 
-
-            }
-
-           
-        ballL.setPosition(ball.getPosition().x - 180, ball.getPosition().y - 180);
-        Window.draw(ballL);
-
-        for (int i = 0; i < li; i++)
-            Window.draw(life_Arr[i]);
+            for (int i = 0; i < li; i++)
+                Window.draw(life_Arr[i]);
 
 
 
 
-        // Window.draw(ball);
+            // Window.draw(ball);
 
-    /*
+        /*
 
-    Window.draw(enemy1);
-    Window.draw(enemy2);
-    Window.draw(enemy3);
-    Window.draw(enemy4);
-    Window.draw(enemy5);
-    Window.draw(enemy6);
-    Window.draw(enemy7);
-    Window.draw(enemy8);
-    Window.draw(enemy9);
-*/
-
-
-//ring12.setPosition(Wall_Arr[8][7].getPosition().x, Wall_Arr[8][7].getPosition().y - 55);
+        Window.draw(enemy1);
+        Window.draw(enemy2);
+        Window.draw(enemy3);
+        Window.draw(enemy4);
+        Window.draw(enemy5);
+        Window.draw(enemy6);
+        Window.draw(enemy7);
+        Window.draw(enemy8);
+        Window.draw(enemy9);
+    */
 
 
-// Window.draw(ring1);
-        
-        Window.display();
+    //ring12.setPosition(Wall_Arr[8][7].getPosition().x, Wall_Arr[8][7].getPosition().y - 55);
+
+
+    // Window.draw(ring1);
+
+            Window.display();
 
 
     }
-    return 0;
-}
+        return 0;
+}    
 
 
